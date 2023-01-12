@@ -1,0 +1,15 @@
+#Using smaller image as possible (basic image)
+#Builder is the name of container
+FROM node:16.19.0-alpine 
+
+#Absolute path
+WORKDIR /app
+
+#Copying packages from /app
+COPY ./package.json ./
+RUN npm install
+
+#Copy all the files
+COPY . .
+
+CMD ["npm", "run", "serve"]
