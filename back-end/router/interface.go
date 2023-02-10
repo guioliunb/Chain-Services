@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	V1Router "github.com/guioliunb/Chain-Services/back-end/routes/v1"
 )
 
 type Service interface{
@@ -31,5 +32,10 @@ func GetRouter() Service{
 			Handler(route.HandlerFunc)
 	}
 
+	for name, pack := range V1Router.GetRoutes(){
+		r.AttachSubRouterWithMiddleware(name, pack.Routes, pack.Middleware)
+	}
+
+	
 	return r
 }
