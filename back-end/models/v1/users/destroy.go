@@ -2,11 +2,9 @@ package users
 
 import (
 	"errors"
-
-	"github.com/guioliunb/Chain-Services/back-end/models"
 )
 
-func Destroy(id string, usr *models.User) (error){
+func Destroy(id string) (error){
 
 	var exists bool
 
@@ -18,7 +16,7 @@ func Destroy(id string, usr *models.User) (error){
 	}
 
 	if !exists {
-		return errors.New("Unable to delete user selected") 
+		return errors.New("unable to delete user selected") 
 	}
 
 	return nil

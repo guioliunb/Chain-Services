@@ -24,6 +24,10 @@ func GetRoutes() map[string]models.SubRoutePackage{
 			Middleware: Middleware(),
 			Routes: models.Routes{
 				models.Route{Name: "UsersIndex", Method : "GET", Pattern: "/users", HandlerFunc: UsersHandler.Index()},
+				models.Route{Name: "UsersStore", Method : "POST", Pattern: "/users", HandlerFunc: UsersHandler.Store()},
+				models.Route{Name: "UsersReplace", Method : "PUT", Pattern: "/users/{id}", HandlerFunc: UsersHandler.Update()},
+				models.Route{Name: "UsersUpdate", Method : "PATCH", Pattern: "/users/{id}", HandlerFunc: UsersHandler.Update()},
+				models.Route{Name: "UsersDestroy", Method : "DELETE", Pattern: "/users/{id}", HandlerFunc: UsersHandler.Destroy()},
 			},
 		},
 	}
