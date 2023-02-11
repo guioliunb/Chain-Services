@@ -1,32 +1,32 @@
-package users
+package rawresourcetypes
 
 import (
 	"encoding/json"
 	"net/http"
 
 	"github.com/guioliunb/Chain-Services/back-end/models"
-	UsersModel "github.com/guioliunb/Chain-Services/back-end/models/v1/users"
+	RawResourceTypesModel "github.com/guioliunb/Chain-Services/back-end/models/v1/rawresourcetypes"
 )
 func Store() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		var user models.User
+		var rawresourcetype models.RawResourceType
 		decoder := json.NewDecoder(r.Body)
 		defer r.Body.Close()
-		err := decoder.Decode(&user)
+		err := decoder.Decode(&rawresourcetype)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 
 			return
 		}
 
-		newUser , err := UsersModel.Store(user.FirstName, user.LastName, user.Email, user.Password)
+		newRawResourceType , err := RawResourceTypesModel.Store(rawresourcetype.Name, rawresourcetype.TypeID, rawresourcetype.Weight, rawresourcetype.ArrivalTime)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		packet , err := json.Marshal(newUser)
+		packet , err := json.Marshal(newRawResourceType)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

@@ -1,21 +1,21 @@
-package users
+package rawresourcetypes
 
 import (
 	"encoding/json"
 	"net/http"
 
-	UsersModel "github.com/guioliunb/Chain-Services/back-end/models/v1/users"
+	RawResourceTypesModel "github.com/guioliunb/Chain-Services/back-end/models/v1/rawresourcetypes"
 )
 
 func Index() http.HandlerFunc{
 	return func(w http.ResponseWriter, r *http.Request) {
-		users, err := UsersModel.Index()
+		rawresourcetypes, err := RawResourceTypesModel.Index()
 
 		if err != nil{
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 
-		packet, err := json.Marshal(users)
+		packet, err := json.Marshal(rawresourcetypes)
 
 		if err != nil{
 			http.Error(w, err.Error(), http.StatusInternalServerError)

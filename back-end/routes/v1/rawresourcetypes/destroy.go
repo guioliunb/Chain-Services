@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	rawresourcetypesModel "github.com/guioliunb/Chain-Services/back-end/models/v1/rawresourcetypes"
+	RawResourceTypesModel "github.com/guioliunb/Chain-Services/back-end/models/v1/users"
 )
 
 func Destroy() http.HandlerFunc{
@@ -13,7 +13,7 @@ func Destroy() http.HandlerFunc{
 		vars := mux.Vars(r)
 		id := vars["id"]
 
-		if err := rawresourcetypesModel.Destroy(id); err != nil{
+		if err := RawResourceTypesModel.Destroy(id); err != nil{
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}

@@ -1,4 +1,4 @@
-package users
+package rawresourcetypes
 
 import (
 	"encoding/json"
@@ -6,7 +6,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/guioliunb/Chain-Services/back-end/models"
-	UsersModel "github.com/guioliunb/Chain-Services/back-end/models/v1/users"
+	RawResourceTypesModel "github.com/guioliunb/Chain-Services/back-end/models/v1/rawresourcetypes"
 )
 
 func Update() http.HandlerFunc{
@@ -15,11 +15,11 @@ func Update() http.HandlerFunc{
 		vars := mux.Vars(r)
 		id := vars["id"]
 
-		var opts UsersModel.UpdateOpts
-		var user models.User
+		var opts RawResourceTypesModel.UpdateOpts
+		var rawresourcetype models.RawResourceType
 		decoder := json.NewDecoder(r.Body)
 		defer r.Body.Close()
-		err := decoder.Decode(&user)
+		err := decoder.Decode(&rawresourcetype)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -28,14 +28,14 @@ func Update() http.HandlerFunc{
 		if r.Method == "PUT"{
 			opts.Replace = true
 		}
-		updatedUser, err := UsersModel.Update(id, &user, &opts)
+		updatedRawResourceType, err := RawResourceTypesModel.Update(id, &rawresourcetype, &opts)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		packet , err := json.Marshal(updatedUser)
+		packet , err := json.Marshal(updatedRawResourceType)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
