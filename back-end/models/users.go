@@ -1,22 +1,5 @@
 package models
-
-import (
-	"github.com/google/uuid"
-)
-
-func genUUID() (ID string, err error){
-	id, err := uuid.NewUUID()
-	if err != nil{
-		return
-	}
-
-	ID = id.String()
-	return
-}
-
 type Users []User
-
-
 type User struct {
 	ID        string `json:"id"`
 	FirstName string `json:"first_name"`
