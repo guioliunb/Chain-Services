@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/guioliunb/Chain-Services/back-end/models"
-	RawResourceTypesModel "github.com/guioliunb/Chain-Services/back-end/models/v1/rawresourcetypes"
+	RawResourceTypesModel "github.com/guioliunb/Chain-Services/back-end/models/v1/rawresourcestypes"
 )
 func Store() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -20,7 +20,7 @@ func Store() http.HandlerFunc {
 			return
 		}
 
-		newRawResourceType , err := RawResourceTypesModel.Store(rawresourcetype.Name, rawresourcetype.TypeID, rawresourcetype.Weight, rawresourcetype.ArrivalTime)
+		newRawResourceType , err := RawResourceTypesModel.Store(rawresourcetype.Name)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

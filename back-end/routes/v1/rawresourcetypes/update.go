@@ -6,7 +6,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/guioliunb/Chain-Services/back-end/models"
-	RawResourceTypesModel "github.com/guioliunb/Chain-Services/back-end/models/v1/rawresourcetypes"
+	RawResourceTypesModel "github.com/guioliunb/Chain-Services/back-end/models/v1/rawresourcestypes"
 )
 
 func Update() http.HandlerFunc{

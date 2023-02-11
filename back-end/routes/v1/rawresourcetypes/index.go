@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	RawResourceTypesModel "github.com/guioliunb/Chain-Services/back-end/models/v1/rawresourcetypes"
+	RawResourceTypesModel "github.com/guioliunb/Chain-Services/back-end/models/v1/rawresourcestypes"
 )
 
 func Index() http.HandlerFunc{
