@@ -15,7 +15,7 @@ RUN npm run builder
 
 FROM nginx
 #Default port - We can need this using elastic search
-EXPOSE 3000
+EXPOSE 8080
 
 #Disk folder inside a container is done
 #Now overides nginx config to project config

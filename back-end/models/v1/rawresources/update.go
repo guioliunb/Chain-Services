@@ -30,7 +30,7 @@ func Update(id string, usr *models.RawResource, opts *UpdateOpts) (*models.RawRe
 				if len(usr.Name) > 0{
 					mockRawResources[index].Name = usr.Name
 				}
-				if usr.TypeID > 0{
+				if len(usr.TypeID) > 0{
 					mockRawResources[index].TypeID = usr.TypeID
 				}
 				if usr.Weight > 0{

@@ -1,10 +1,10 @@
-package rawresourcetypes
+package rawresources
 
 import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	RawResourceTypesModel "github.com/guioliunb/Chain-Services/back-end/models/v1/rawresourcestypes"
+	RawResourcesModel "github.com/guioliunb/Chain-Services/back-end/models/v1/rawresources"
 )
 
 func Destroy() http.HandlerFunc{
@@ -13,7 +13,7 @@ func Destroy() http.HandlerFunc{
 		vars := mux.Vars(r)
 		id := vars["id"]
 
-		if err := RawResourceTypesModel.Destroy(id); err != nil{
+		if err := RawResourcesModel.Destroy(id); err != nil{
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}

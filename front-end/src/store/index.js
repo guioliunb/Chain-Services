@@ -1,43 +1,17 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import * as moment from 'moment'
+import axios from 'axios';
+import e from 'cors';
+
+const baseURL = `/api/v1`
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    raw_resources: [
-    {
-      id:1,
-      name:"Chain init",
-      source: "google.com",
-      score: 1,
-      type_id : 1,
-      timestamp: moment().format('DD/MM/YYYY')
-    },
-    {
-      id:2,
-      name:"Chain duplicate",
-      source: "yahoo.com",
-      score: 1,
-      type_id : 2,
-      timestamp: moment().format('DD/MM/YYYY')
-    },
-    {
-      id:3,
-      name:"Block upgrading",
-      source: "crypto.com",
-      score: 10,
-      type_id : 3,
-      timestamp: moment().format('DD/MM/YYYY')
-    }
-  ],
-    raw_resource_types: [
-      {id: 1, role: "Agent"},
-      {id: 2, role: "Manager"},
-      {id: 3, role: "Supervisor"},
-      {id: 4, role: "Owner"},
-    ]
+    raw_resources: [],
+    raw_resource_types: []
   },
   getters: {
   },
@@ -48,33 +22,102 @@ export default new Vuex.Store({
   modules: {
   },
   actions: {
-    async create({state} , new_item){
-      new_item.timestamp = moment().format('DD/MM/YYYY')
-      new_item.id = +state.raw_resources[state.raw_resources.length-1].id + 1
+    async fetchRawResourceTypes({state}) {
 
-      state.raw_resources.push(new_item)
+      const fetch = require(`node-fetch`);
+      
+      var response = fetch(`${baseURL}/rawresourcetypes`).then(  (result)=>{
+        const rawResourceTypes =  result.json().then((data) => { 
+                                      //console.log(`data`, data)
+                                      state.raw_resource_types = [ `Please Select Type` , ...data.map(d => d.Name)]
+                                      //return;
+                                    })
+        }).catch((error)=>{
+          console.log(`Error`,error);
+        });
 
-      return Promise.resolve();
+
+      return null;
+    },
+    async fetchRawResource({state}) {
+
+      const fetch = require(`node-fetch`);
+      
+      var response = await fetch(`${baseURL}/rawresources`)
+      
+      const rawResources =  await response.json()
+
+      let result = rawResources 
+
+      state.raw_resources = result.map(el => {
+        el.id = el.ID
+        el.name = el.Name
+        el.type_id = el.TypeID
+        el.arrival_time = moment(el.arrival_time || moment()).format('DD/MM/YYYY')
+        el.timestamp = moment(el.timestamp || moment()).format('DD/MM/YYYY')
+        el.weight = el.Weight
+        el.arrival_time = el.ArrivalTime
+        el.timestamp = el.Timestamp
+
+        return el;
+    })
+
+
+      return null;
     },
 
     async get({state}, id){
-      return state.raw_resources.find(item => +item.id === +id);
+
+      const fetch = require(`node-fetch`);
+      
+      var response = await fetch( `${baseURL}/rawresources/${id}`)
+  
+      const rawResources =  await response.json()
+
+      return rawResources;
     },
 
-    async update({state}, {id, data}){
-      const index = state.raw_resources.findIndex(item => +item.id === +id)
+      async create({ state }, new_item) {
 
-      Object.assign(state.raw_resources[index], data) 
+        data.weight = +data.weight
 
-      return Promise.resolve();
-    },
+            const response = await fetch(`${baseURL}/rawresources`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(new_item)
+            })
 
-    async destroy({state}, id){
-    
+            let newRawResource = response.json()
 
-      return state.raw_resources.pop(item => +item.id === +id);
+            return newRawResource
+        },
 
-    }
+        async update({ state }, { id, data }) {
+
+            data.weight = +data.weight
+
+            const response = await fetch(`${baseURL}/rawresources/${id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+
+            let newRawResource = response.json()
+
+            return newRawResource
+        },
+        async destroy({ state }, id) {
+
+            const response = await fetch(`${baseURL}/rawresources/${id}`, {
+                method: 'DELETE'
+            })
+
+            return Promise.resolve();
+        }
 
   }
 })

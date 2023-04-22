@@ -29,13 +29,13 @@ type RawResources []RawResource
 type RawResource struct{
 	ID string `json: "id"`
 	Name string `json: "name"`
-	TypeID int `json: "type_id"`
+	TypeID string `json: "type_id"`
 	Weight int `json: "weight"`
 	ArrivalTime *time.Time `json: "arrival_time"`
 	Timestamp *time.Time `json: "timestamp"`
 }
 
-func NewRawResource(name string, typeId int, weight int, arrivalTime *time.Time) (rawResource *RawResource, err error){
+func NewRawResource(name string, typeId string, weight int, arrivalTime *time.Time) (rawResource *RawResource, err error){
 	rawResource = new (RawResource)
 
 	if rawResource.ID, err = genUUID(); err != nil{

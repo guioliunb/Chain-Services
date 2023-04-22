@@ -6,7 +6,7 @@ import (
 	"github.com/guioliunb/Chain-Services/back-end/models"
 )
 
-func Store(name string, typeId int, weight int, arrivalTime *time.Time)(rawresource *models.RawResource, err error){
+func Store(name string, typeId string, weight int, arrivalTime *time.Time)(rawresource *models.RawResource, err error){
 
 	rawresource, err = models.NewRawResource(name, typeId, weight, arrivalTime)
 

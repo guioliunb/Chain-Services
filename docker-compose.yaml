@@ -1,0 +1,34 @@
+version: "2"
+
+#namespace utilizado para conexão
+networks:
+  default.svc.cluster.local:
+
+#Diretivas de build para a api
+#Define os contextos em suas pastas e portas. Além de buildar as dependências
+# e explicitar que o frontend depende do funcionamento do backend
+services:
+  api:
+    container_name: api
+    build:
+      context: ./back-end
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    networks:
+      - default.svc.cluster.local
+
+  web:
+    container_name: web
+    build:
+      context: ./front-end
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    volumes:
+      - /app/node_modules
+      - ./front-end:/app
+    networks:
+      - default.svc.cluster.local
+    depends_on:
+      - api

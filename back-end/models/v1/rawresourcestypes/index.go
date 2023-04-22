@@ -5,7 +5,6 @@ import (
 )
 
 func Index() (rawresourcetypes * models.RawResourceTypes, err error){
-	rawresourcetypes = &mockRawResourceTypes
-
+	rawresourcetypes = &mockRawResourceTypes	
 	return
 }

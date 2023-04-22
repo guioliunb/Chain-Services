@@ -1,29 +1,28 @@
-package rawresourcetypes
+package rawresources
 
 import (
 	"encoding/json"
 	"fmt"
 	"net/http"
 
-	RawResourceTypesModel "github.com/guioliunb/Chain-Services/back-end/models/v1/rawresourcestypes"
+	RawResourcesModel "github.com/guioliunb/Chain-Services/back-end/models/v1/rawresources"
 )
-
 
 func Index() http.HandlerFunc{
 	return func(w http.ResponseWriter, r *http.Request) {
-		rawresourcetypes, err := RawResourceTypesModel.Index()
+		rawresources, err := RawResourcesModel.Index()
 
 		if err != nil{
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 
-		packet, err := json.Marshal(rawresourcetypes)
+		packet, err := json.Marshal(rawresources)
 
 		if err != nil{
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-		
-		fmt.Printf("Current Current RawResourceType: %s \n", packet );
+
+		fmt.Printf("Current RawResource: %s \n", packet );
 		w.Write(packet)
 	}
 }

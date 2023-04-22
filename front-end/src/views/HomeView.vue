@@ -1,42 +1,53 @@
-<template lang = "pug">
-  v-row   
-    v-col(md="8" offset-md="2")
-        v-data-table(
-          :headers="headers"
-          :items="raw_resources"
-        )
-          template(v-slot:item.id="{item}")
-            router-link(:to="'/update/' + item.id") Update    
-            a(@click="destroy(item.id)") Destroy
+<template lang="pug">
+  
+  v-row
+      v-col(md="8" offset-md="2")
+
+          v-data-table(
+              :headers="headers"
+              :items="raw_resources"
+          )
+              template(v-slot:item.id="{item}")
+                  span {{ item.id }} .
+
+              template(v-slot:item.id="{ item }")
+                  router-link(:to="'/update/' + item.id") Update
+                  a(@click="destroy(item.id)") Destroy
+
 </template>
 
 <script>
-  import HelloWorld from '../components/HelloWorld'
-  import { mapState } from 'vuex';
+import { mapState } from "vuex";
 
-  export default {
-    data(){
-      return {
-        headers: [
-          {text: 'Actions', value: 'id'},
-          {text: 'Name', value: 'name'},
-          {text: 'Source', value: 'source'},
-          {text: 'Score', value: 'score'},
-          {text: 'Arrival time', value: 'timestamp'},
-        ],
-      };
-    },
-    computed:{
-      ...mapState(
-        {raw_resources: state => state.raw_resources}
-      ),
-    },
-    methods: {
-      async destroy(id){
-        const vm = this;
+export default {
+data() {
+  return {
+    headers: [
+      { text: "Name", value: "name" },
+      { text: "Weight", value: "weight" },
+      { text: "Type ID", value: "type_id" },
+      { text: "Timestamp", value: "timestamp" },
+      { text: "Actions", value: "id" }
+    ]
+  };
+},
+computed: {
+  ...mapState({
+      raw_resources: state => state.raw_resources
+  })
+},
+methods: {
+  async destroy(id) {
+    const vm = this;
 
-        await vm.$store.dispatch("destroy", id);
-      }
-    }
+    await vm.$store.dispatch("destroy", id);
+    await vm.$store.dispatch("fetchRawResource");
+
+
   }
+},
+mounted() {
+  this.$store.dispatch("fetchRawResource");
+}
+};
 </script>

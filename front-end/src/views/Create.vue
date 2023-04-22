@@ -30,12 +30,13 @@
 <script>
 import { mapState } from "vuex";
 
+/*verificar porque o campo weight quebra o post quando tira o hardcoded*/
 export default {
   name: "create",
   data() {
     return {
       name: "",
-      weight: 42000,
+      weight: 0,
       type_id: 0
     };
   },
