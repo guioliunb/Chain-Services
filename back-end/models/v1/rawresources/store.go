@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"strconv"
+	"time"
 
 	"github.com/guioliunb/Chain-Services/back-end/models"
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
@@ -18,7 +19,7 @@ type TransactionContextInterface struct {
 	contractapi.TransactionContextInterface
 }
 
-func (s *SmartContract) Store(ctx contractapi.TransactionContextInterface, name string, typeId string, weight int) (rawresource *models.RawResource, err error) {
+func Store(name string, typeId string, weight int, arrivalTime *time.Time) (rawresource *models.RawResource, err error) {
 
 	rawresource, err = models.NewRawResourceDuo(name, typeId, weight)
 
@@ -27,6 +28,12 @@ func (s *SmartContract) Store(ctx contractapi.TransactionContextInterface, name 
 	}
 
 	mockRawResources = append(mockRawResources, *rawresource)
+	/*s.StoreBlock("", name, typeId, weight)*/
+	return
+
+}
+
+func (s *SmartContract) StoreBlock(ctx contractapi.TransactionContextInterface, name string, typeId string, weight int) (rawresource *models.RawResource, err error) {
 
 	/*Blockchain store*/
 
