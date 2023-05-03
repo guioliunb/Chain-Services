@@ -1,8 +1,10 @@
-package models
+package main
 
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand"
+	"strconv"
 
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
@@ -191,4 +193,39 @@ func (s *SmartContract) GetAllAssets(ctx contractapi.TransactionContextInterface
 	}
 
 	return assets, nil
+}
+
+func (s *SmartContract) StoreBlock(ctx contractapi.TransactionContextInterface, name string, typeId string, weight int) (err error) {
+
+	/*Blockchain store*/
+
+	/*exists, err := s.AssetExists(ctx, id)
+
+	if err != nil {
+		return err
+	}
+	if exists {
+		return fmt.Errorf("the asset %s already exists", id)
+	}
+	*/
+
+	asset := Asset{
+		ID:             "UNIQUE",
+		Color:          "color",
+		Size:           15,
+		Owner:          "owner",
+		AppraisedValue: 15,
+	}
+
+	assetJSON, err := json.Marshal(asset)
+	id := "id#" + strconv.Itoa(rand.Intn(1000))
+
+	ctx.GetStub().PutState(id, assetJSON)
+
+	assetJSONOUT, err := ctx.GetStub().GetState(id)
+	fmt.Printf("mystr:\t %v \n", []byte(assetJSONOUT))
+	/*var assetOUT models.Asset
+	err = json.Unmarshal(assetJSONOUT, &assetOUT)*/
+
+	return
 }
