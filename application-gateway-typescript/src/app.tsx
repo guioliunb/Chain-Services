@@ -5,11 +5,49 @@
  */
 
 import * as grpc from '@grpc/grpc-js';
+
 import { connect, Contract, Identity, Signer, signers } from '@hyperledger/fabric-gateway';
 import * as crypto from 'crypto';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { TextDecoder } from 'util';
+
+//firebase
+import { initializeApp } from "firebase/app";
+import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+
+
+import App from '../public/AppFront';
+
+//RDF format
+import owl from '@ontologies/core';
+import ReactDOM from 'react-dom';
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+
+
+const firebaseConfig = {
+
+    apiKey: "AIzaSyA2qsHbyS6ocXja1nnymwSGHcqi5sXWDus",
+  
+    authDomain: "hyperledger-authentication.firebaseapp.com",
+  
+    databaseURL: "https://hyperledger-authentication-default-rtdb.firebaseio.com",
+  
+    projectId: "hyperledger-authentication",
+  
+    storageBucket: "hyperledger-authentication.appspot.com",
+  
+    messagingSenderId: "892365053620",
+  
+    appId: "1:892365053620:web:00f774eed60cf96e1c01e1",
+  
+    measurementId: "G-L7ZENW7M09"
+  
+  };
+  
+
 
 const channelName = envOrDefault('CHANNEL_NAME', 'mychannel');
 const chaincodeName = envOrDefault('CHAINCODE_NAME', 'deploy');
@@ -35,6 +73,12 @@ const peerHostAlias = envOrDefault('PEER_HOST_ALIAS', 'peer0.org1.example.com');
 
 const utf8Decoder = new TextDecoder();
 const DocumentId = `Document${Date.now()}`;
+
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
 
 async function main(): Promise<void> {
 
@@ -74,21 +118,35 @@ async function main(): Promise<void> {
 
         // Return all the current Documents on the ledger.
         await getAllDocuments(contract);
-
+        
+        await onAuthState();
         // Create a new Document on the ledger.
-        await createDocument(contract);
+        //await createDocument(contract);
+        ///await createUser();
+
+        /*await signInUser("test@blockmail.com", "password");
+
+        const quad = owl.quad('User', 'logged', 'ONLINE') ;
+        const node = owl.namedNode("Title") ;
+        console.log(quad);
+        console.log(node);
+        await signOutUser();*/
 
         // Update an existing Document asynchronously.
-        await transferDocumentAsync(contract);
+        //await transferDocumentAsync(contract);
 
         // Get the Document details by DocumentID.
-        await readDocumentByID(contract);
+        //await readDocumentByID(contract);
 
         // Update an Document which does not exist.
         //await updateNonExistentDocument(contract)
     } finally {
+        
         gateway.close();
         client.close();
+
+        App();
+     
     }
 }
 
@@ -96,6 +154,65 @@ main().catch(error => {
     console.error('******** FAILED to run the application:', error);
     process.exitCode = 1;
 });
+
+
+async function createUser(email: string , password: string ){
+   createUserWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+    console.log(user);
+    // ...
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    // ..
+  });
+}
+
+async function signInUser(email: string , password: string ){
+
+    signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            // Signed in
+            const user = userCredential.user;
+            //console.log(userCredential.user);
+            
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(errorCode, errorMessage)
+        });
+}
+
+async function signOutUser() {
+    signOut(auth)
+        .then(() => {
+            console.log('User signed out!')
+        })
+        .catch(error => {
+            console.log('Something went wrong with sign out: ', error);
+        }
+        )
+}
+
+async function onAuthState() {
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // User is signed in, see docs for a list of available properties
+          // https://firebase.google.com/docs/reference/js/auth.user
+          const uid = user.uid;
+          console.log('Logged now!');
+
+          // ...
+        } else {
+          console.log('No logged yet');
+        }
+      });
+}
+
 
 async function newGrpcConnection(): Promise<grpc.Client> {
     const tlsRootCert = await fs.readFile(tlsCertPath);
