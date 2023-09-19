@@ -93,7 +93,7 @@ function AutenticadorTexto() {
   return (
     <Container maxWidth="xs" sx={{ marginTop: '100px' }}>
       <Typography variant="h4" sx={{ marginBottom: '20px' }}>
-        Criação de Documentos
+        Autenticação de Documentos
       </Typography>
       <TextField
         label="ID"

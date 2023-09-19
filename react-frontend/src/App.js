@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
-import { Container, TextField, Button, Typography } from '@mui/material';
 import axios from 'axios';
-import Login from './Login';
 import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
+import { Container, TextField, Button } from '@mui/material';
 import AutenticadorTexto from './AutenticadorTexto';
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  signOut
+} from 'firebase/auth';
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyA2qsHbyS6ocXja1nnymwSGHcqi5sXWDus",
@@ -17,9 +22,9 @@ const firebaseConfig = {
   measurementId: "G-L7ZENW7M09"
 };
 
-// Inicializar o Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
 function App() {
   const [documentData, setDocumentData] = useState({
@@ -30,117 +35,78 @@ function App() {
     Editors: 'Oli',
     Multimedia: 'Web Browser',
     Keywords: 'Working',
-    timestamp: serverTimestamp()
+    timestamp: serverTimestamp(),
   });
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setDocumentData((prevData) => ({
-      ...prevData,
-      [name]: value
-    }));
-  };
+  const [loginSuccess, setLoginSuccess] = useState(false);
+  const [loginError, setLoginError] = useState(null);
 
-  const handleCreation = () => {
-    const url = 'http://localhost:8080/documents';
+  const [loginEmail, setLoginEmail] = useState(''); // Novo estado para email de login
+  const [loginPassword, setLoginPassword] = useState(''); // Novo estado para senha de login
 
-    axios
-      .post(url, documentData, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-        },
-      })
-      .then((response) => {
-        // Lógica para lidar com a resposta da requisição de login bem-sucedida
-        console.log(response.data);
+  const handleLogin = () => {
+    // Use os estados de loginEmail e loginPassword para fazer o login
+    console.log(loginEmail);
+    console.log(loginPassword);
+  
+    signInWithEmailAndPassword(auth, loginEmail, loginPassword)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log('Usuário logado:', user);
+        setLoginSuccess(true);
+        setLoginError(null);
       })
       .catch((error) => {
-        // Lógica para lidar com erros na requisição de login
-        console.error(error);
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error('Erro ao fazer login:', errorCode, errorMessage);
+        setLoginSuccess(false);
+        setLoginError(errorMessage);
       });
-
-      handleSave();
-
   };
 
-  const handleSave = async () => {
-    try {
-      const docRef = await addDoc(collection(db, "document"), documentData);
-      console.log('Documento adicionado com ID:', docRef.id);
-    } catch (error) {
-      console.error('Erro ao adicionar documento:', error);
-    }
+  const handleLogout = () => {
+    signOut(auth)
+      .then(() => {
+        console.log('Usuário deslogado');
+        setLoginSuccess(false);
+      })
+      .catch((error) => {
+        console.error('Erro ao deslogar:', error);
+      });
   };
 
   return (
     <Container maxWidth="xs" sx={{ marginTop: '100px' }}>
-      <AutenticadorTexto />
-
-      <Login />
-
-      <Typography variant="h4" sx={{ marginBottom: '20px' }}>
-        Criação de Documentos
-      </Typography>
-      <TextField
-        label="ID"
-        fullWidth
-        name="ID"
-        value={documentData.ID}
-        onChange={handleChange}
-        sx={{ marginBottom: '10px' }}
-      />
-      <TextField
-        label="Título"
-        fullWidth
-        name="Title"
-        value={documentData.Title}
-        onChange={handleChange}
-        sx={{ marginBottom: '10px' }}
-      />
-      <TextField
-        label="Soutien"
-        fullWidth
-        name="Soutien"
-        value={documentData.Soutien}
-        onChange={handleChange}
-        sx={{ marginBottom: '10px' }}
-      />
-      <TextField
-        label="Autores"
-        fullWidth
-        name="Authors"
-        value={documentData.Authors}
-        onChange={handleChange}
-        sx={{ marginBottom: '10px' }}
-      />
-      <TextField
-        label="Editores"
-        fullWidth
-        name="Editors"
-        value={documentData.Editors}
-        onChange={handleChange}
-        sx={{ marginBottom: '10px' }}
-      />
-      <TextField
-        label="Multimídia"
-        fullWidth
-        name="Multimedia"
-        value={documentData.Multimedia}
-        onChange={handleChange}
-        sx={{ marginBottom: '10px' }}
-      />
-      <TextField
-        label="Palavras-chave"
-        fullWidth
-        name="Keywords"
-        value={documentData.Keywords}
-        onChange={handleChange}
-        sx={{ marginBottom: '20px' }}
-      />
-      <Button variant="contained" onClick={handleCreation} fullWidth>
-        Entrar
-      </Button>
+      {loginSuccess ? (
+        <AutenticadorTexto />
+      ) : (
+        <div>
+          <h2>Faça login com o Firebase</h2>
+          <TextField
+            label="Email"
+            variant="outlined"
+            type="email"
+            value={loginEmail}
+            onChange={(e) => setLoginEmail(e.target.value)} // Atualize o estado de loginEmail
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Senha"
+            variant="outlined"
+            type="password"
+            value={loginPassword}
+            onChange={(e) => setLoginPassword(e.target.value)} // Atualize o estado de loginPassword
+            fullWidth
+            margin="normal"
+          />
+          {loginError && <p>{loginError}</p>}
+          <Button variant="contained" onClick={handleLogin}>
+            Fazer Login
+          </Button>
+        </div>
+      )}
     </Container>
   );
 }
