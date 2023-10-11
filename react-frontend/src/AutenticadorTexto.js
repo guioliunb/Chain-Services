@@ -172,17 +172,6 @@ function AutenticadorTexto() {
       <Button variant="contained" onClick={handleSave} fullWidth>
         Salvar no Firestore
       </Button>
-
-      <Button variant="contained" onClick={handleSearch} fullWidth>
-        Buscar versões autenticadas do documento
-      </Button>
-
-      <Button variant="contained" onClick={handleFetch} fullWidth>
-        Buscar histórico do documento
-      </Button>
-
-      <DocumentListAuth documents={searchResults} />
-      <DocumentList documents={searchHistoric} />
       
     </Container>
   );

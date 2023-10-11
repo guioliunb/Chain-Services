@@ -36,3 +36,16 @@
     transform: rotate(360deg);
   }
 }
+
+.customLink {
+  text-decoration: none;
+  font-size: 18px;
+  margin: 0 10px;
+  color: #333; /* Cor desejada */
+  font-weight: bold;
+  transition: color 0.3s; /* Transição de cor suave */
+}
+
+.customLink:hover {
+  color: #007BFF; /* Cor quando o mouse passa por cima */
+}

@@ -4,11 +4,21 @@ import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/fire
 import { initializeApp } from 'firebase/app';
 import { Container, TextField, Button } from '@mui/material';
 import AutenticadorTexto from './AutenticadorTexto';
+import CriacaoDocumento from './CriacaoDocumento'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import Sobre from './Sobre';
+import Home from './Home'
+import DocumentList from './DocumentList';
+import { styled } from '@mui/system';
+import './App.css'; 
+
+
 import {
   getAuth,
   signInWithEmailAndPassword,
   signOut
 } from 'firebase/auth';
+import DocumentListAuth from './DocumentListAuth';
 
 
 const firebaseConfig = {
@@ -76,10 +86,74 @@ function App() {
       });
   };
 
+  function Apresentacao() {
+    return (
+      <div style={{ padding: 20 }}>
+        <h2>Home View</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adip.</p>
+      </div>
+    );
+  }
+
+  function Logout() {
+    return (
+      <div style={{ padding: 20 }}>
+        <Button variant="contained" onClick={handleLogout}>
+            Fazer Logout
+          </Button>
+      </div>
+    );
+  }
+  
+  function NoMatch() {
+    return (
+      <div style={{ padding: 20 }}>
+        <h2>404: Page Not Found</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adip.</p>
+      </div>
+    );
+  }
+
+  const CustomLink = styled(Link)({
+    padding: 5,
+    textDecoration: 'none',
+    color: (theme) => theme.palette.primary.main,
+  });
+
   return (
     <Container maxWidth="xs" sx={{ marginTop: '100px' }}>
       {loginSuccess ? (
-        <AutenticadorTexto />
+        <Router>
+         <nav style={{ margin: 10 }}>
+            <Link to="/" className="customLink">
+              Home
+            </Link>
+            <Link to="/criacao" className="customLink">
+              Criacao
+            </Link>
+            <Link to="/autenticacao" className="customLink">
+              Autenticacao
+            </Link>
+            <Link to="/historico" className="customLink">
+              Historico
+            </Link>
+            <Link to="/versaoAutenticada" className="customLink">
+              Versões
+            </Link>
+            <Link to="/logout" className="customLink">
+              Logout
+            </Link>
+          </nav>
+        <Routes>
+          <Route path="/"                   element={<Home />} />
+          <Route path="/criacao"            element={<CriacaoDocumento />} />
+          <Route path="/autenticacao"       element={<AutenticadorTexto />} />
+          <Route path="/historico"          element={<DocumentList />} />
+          <Route path="/versaoAutenticada"  element={<DocumentListAuth />} />
+          <Route path="/logout"             element={<Logout />} />
+          <Route path="*"                   element={<NoMatch />} />
+        </Routes>
+      </Router>
       ) : (
         <div>
           <h2>Faça login com o Firebase</h2>

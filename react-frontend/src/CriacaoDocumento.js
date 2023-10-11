@@ -1,8 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { Container, TextField } from '@mui/material';
+import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import axios from 'axios';
+import { Container, TextField, Button, Typography } from '@mui/material';
 import { List, ListItem, ListItemText, Divider } from '@mui/material';
+import { initializeApp } from 'firebase/app';
 import { format } from 'date-fns';
 
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA2qsHbyS6ocXja1nnymwSGHcqi5sXWDus",
+  authDomain: "hyperledger-authentication.firebaseapp.com",
+  databaseURL: "https://hyperledger-authentication-default-rtdb.firebaseio.com",
+  projectId: "hyperledger-authentication",
+  storageBucket: "hyperledger-authentication.appspot.com",
+  messagingSenderId: "892365053620",
+  appId: "1:892365053620:web:00f774eed60cf96e1c01e1",
+  measurementId: "G-L7ZENW7M09"
+};
+
+// Inicializar o Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 function CriacaoDocumento({ documents }) {
 
@@ -39,6 +58,14 @@ function CriacaoDocumento({ documents }) {
           handleSave();
     
       };
+
+      const handleChange = (event) => {
+    const { name, value } = event.target;
+    setDocumentData((prevData) => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
     
       const handleSave = async () => {
         try {
@@ -119,4 +146,4 @@ function CriacaoDocumento({ documents }) {
   );
 }
 
-export default DocumentList;
+export default CriacaoDocumento;
