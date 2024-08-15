@@ -7,7 +7,7 @@ module.exports = {
   target: 'node',
   entry: './src/app.tsx',
   output: {
-    filename: 'bundle.js',
+    filename: 'app.js', // Ajuste o nome do arquivo de saída
     path: path.resolve(__dirname, 'dist'),
   },
   module: {
@@ -60,4 +60,18 @@ module.exports = {
       ],
     }),
   ],
+  devServer: {
+    // static: {
+    //   directory: path.join(__dirname, 'dist'),
+    // },
+    proxy: {
+      '/api': {
+        target: 'http://localhost:9090', // Ajuste para o endereço correto do backend
+        changeOrigin: true,
+        logLevel: 'debug',
+        pathRewrite: { '^/api': '' },
+      },
+    },
+    port: 8080, // Ajuste a porta do servidor de desenvolvimento se necessário
+  },
 };

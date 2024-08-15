@@ -10,7 +10,7 @@
        "allowJs": true,
        "experimentalDecorators": true,
        "emitDecoratorMetadata": true,
-       "outDir": "dist",
+       "outDir": "./dist",
        "moduleResolution": "node",
        "declaration": true,
        "sourceMap": true,

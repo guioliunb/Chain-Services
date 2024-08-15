@@ -1,56 +1,15 @@
-/*
- * Copyright IBM Corp. All Rights Reserved.
- *
- * SPDX-License-Identifier: Apache-2.0
- */
-
+import express, { Request, Response } from 'express';
+import bodyParser from 'body-parser';
 import * as grpc from '@grpc/grpc-js';
-
 import { connect, Contract, Identity, Signer, signers } from '@hyperledger/fabric-gateway';
 import * as crypto from 'crypto';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { TextDecoder } from 'util';
-
-//firebase
-import { initializeApp } from "firebase/app";
-import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
-
-
-import App from '../public/AppFront';
-
-//RDF format
-import owl from '@ontologies/core';
-import ReactDOM from 'react-dom';
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-
-
-const firebaseConfig = {
-
-    apiKey: "AIzaSyA2qsHbyS6ocXja1nnymwSGHcqi5sXWDus",
-  
-    authDomain: "hyperledger-authentication.firebaseapp.com",
-  
-    databaseURL: "https://hyperledger-authentication-default-rtdb.firebaseio.com",
-  
-    projectId: "hyperledger-authentication",
-  
-    storageBucket: "hyperledger-authentication.appspot.com",
-  
-    messagingSenderId: "892365053620",
-  
-    appId: "1:892365053620:web:00f774eed60cf96e1c01e1",
-  
-    measurementId: "G-L7ZENW7M09"
-  
-  };
-  
-
+import cors from 'cors';
 
 const channelName = envOrDefault('CHANNEL_NAME', 'mychannel');
-const chaincodeName = envOrDefault('CHAINCODE_NAME', 'deploy');
+const chaincodeName = envOrDefault('CHAINCODE_NAME', 'basic');
 const mspId = envOrDefault('MSP_ID', 'Org1MSP');
 
 // Path to crypto materials.
@@ -74,14 +33,7 @@ const peerHostAlias = envOrDefault('PEER_HOST_ALIAS', 'peer0.org1.example.com');
 const utf8Decoder = new TextDecoder();
 const DocumentId = `Document${Date.now()}`;
 
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-
 async function main(): Promise<void> {
-
     await displayInputParameters();
 
     // The gRPC client connection should be shared by all Gateway connections to this endpoint.
@@ -118,19 +70,9 @@ async function main(): Promise<void> {
 
         // Return all the current Documents on the ledger.
         await getAllDocuments(contract);
-        
-        await onAuthState();
+
         // Create a new Document on the ledger.
         //await createDocument(contract);
-        ///await createUser();
-
-        /*await signInUser("test@blockmail.com", "password");
-
-        const quad = owl.quad('User', 'logged', 'ONLINE') ;
-        const node = owl.namedNode("Title") ;
-        console.log(quad);
-        console.log(node);
-        await signOutUser();*/
 
         // Update an existing Document asynchronously.
         //await transferDocumentAsync(contract);
@@ -139,14 +81,10 @@ async function main(): Promise<void> {
         //await readDocumentByID(contract);
 
         // Update an Document which does not exist.
-        //await updateNonExistentDocument(contract)
+        //await updateNonExistentDocument(contract);
     } finally {
-        
         gateway.close();
         client.close();
-
-        App();
-     
     }
 }
 
@@ -154,65 +92,6 @@ main().catch(error => {
     console.error('******** FAILED to run the application:', error);
     process.exitCode = 1;
 });
-
-
-async function createUser(email: string , password: string ){
-   createUserWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
-    // Signed in 
-    const user = userCredential.user;
-    console.log(user);
-    // ...
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    // ..
-  });
-}
-
-async function signInUser(email: string , password: string ){
-
-    signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            // Signed in
-            const user = userCredential.user;
-            //console.log(userCredential.user);
-            
-        })
-        .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.log(errorCode, errorMessage)
-        });
-}
-
-async function signOutUser() {
-    signOut(auth)
-        .then(() => {
-            console.log('User signed out!')
-        })
-        .catch(error => {
-            console.log('Something went wrong with sign out: ', error);
-        }
-        )
-}
-
-async function onAuthState() {
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-          // User is signed in, see docs for a list of available properties
-          // https://firebase.google.com/docs/reference/js/auth.user
-          const uid = user.uid;
-          console.log('Logged now!');
-
-          // ...
-        } else {
-          console.log('No logged yet');
-        }
-      });
-}
-
 
 async function newGrpcConnection(): Promise<grpc.Client> {
     const tlsRootCert = await fs.readFile(tlsCertPath);
@@ -263,18 +142,18 @@ async function getAllDocuments(contract: Contract): Promise<void> {
 /**
  * Submit a transaction synchronously, blocking until it has been committed to the ledger.
  */
-async function createDocument(contract: Contract): Promise<void> {
-    console.log('\n--> Submit Transaction: CreateDocument, creates new Document with ID, Color, Size, Owner and AppraisedValue arguments');
+async function createDocument(contract: Contract, Title: string, Soutien: string, Authors: string, Editors: string, Multimedia: string, Keywords: string ): Promise<void> {
+    console.log('\n--> Submit Transaction: CreateDocument, creates new Document with ID, Title, Soutien, Authors, Editors, Multimedia, and Keywords arguments');
 
     await contract.submitTransaction(
         'CreateDocument',
         DocumentId,
-        'Revista criada por front-end',
-        'É importante essa integração funcionar',
-        'Guilherme',
-        'Guilherme, Edison, UnB',
-        'Email, Phone',
-        'Future, authentication'
+        Title,
+        Soutien,
+        Authors,
+        Editors,
+        Multimedia,
+        Keywords
     );
 
     console.log('*** Transaction committed successfully');
@@ -316,7 +195,7 @@ async function readDocumentByID(contract: Contract): Promise<void> {
 /**
  * submitTransaction() will throw an error containing details of any error responses from the smart contract.
  */
-async function updateNonExistentDocument(contract: Contract): Promise<void>{
+async function updateNonExistentDocument(contract: Contract): Promise<void> {
     console.log('\n--> Submit Transaction: UpdateDocument Document70, Document70 does not exist and should return an error');
 
     try {
@@ -355,3 +234,80 @@ async function displayInputParameters(): Promise<void> {
     console.log(`peerEndpoint:      ${peerEndpoint}`);
     console.log(`peerHostAlias:     ${peerHostAlias}`);
 }
+
+async function newContract(): Promise<Contract> {
+    const client = await newGrpcConnection();
+    const gateway = connect({
+      client,
+      identity: await newIdentity(),
+      signer: await newSigner(),
+    });
+    const network = gateway.getNetwork(channelName);
+    return network.getContract(chaincodeName);
+}
+
+const app = express();
+app.use(bodyParser.json());
+// Permitir todas as origens (não recomendado para produção)
+app.use(cors());
+
+app.get('/documents', async (req: Request, res: Response) => {
+    try {
+        const contract = await newContract();
+        const result = await contract.evaluateTransaction('GetAllDocuments');
+        res.json(JSON.parse(utf8Decoder.decode(result)));
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+app.post('/documents', async (req: Request, res: Response) => {
+    try {
+        const contract = await newContract();
+        const { Title, Soutien, Authors, Editors, Multimedia, Keywords } = req.body;
+        await contract.submitTransaction('CreateDocument', DocumentId, Title, Soutien, Authors, Editors, Multimedia, Keywords);
+        res.status(201).send(`Document ${DocumentId} created`);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+app.post('/documents/transfer', async (req: Request, res: Response) => {
+    try {
+        const contract = await newContract();
+        const { documentId, newOwner } = req.body;
+        const commit = await contract.submitAsync('TransferDocument', { arguments: [documentId, newOwner] });
+        const oldOwner = utf8Decoder.decode(commit.getResult());
+        await commit.getStatus();
+        res.send(`Ownership transferred from ${oldOwner} to ${newOwner}`);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+app.get('/documents/:id', async (req: Request, res: Response) => {
+    try {
+        const contract = await newContract();
+        const documentId = req.params.id;
+        const result = await contract.evaluateTransaction('ReadDocument', documentId);
+        res.json(JSON.parse(utf8Decoder.decode(result)));
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+app.put('/documents/:id', async (req: Request, res: Response) => {
+    try {
+        const contract = await newContract();
+        const documentId = req.params.id;
+        const { Title, Soutien, Authors, Editors, Multimedia, Keywords } = req.body;
+        await contract.submitTransaction('UpdateDocument', documentId, Title, Soutien, Authors, Editors, Multimedia, Keywords);
+        res.send(`Document ${documentId} updated`);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+app.listen(9090, () => {
+    console.log('Server running on http://localhost:9090');
+});
