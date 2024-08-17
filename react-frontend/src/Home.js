@@ -49,7 +49,7 @@ const Home = () => {
       </main>
 
       <footer className="home-footer">
-        <p>&copy; 2024 Autenticador Blockchain. Todos os direitos reservados.</p>
+        <p>&copy; 2024 Autenticador Blockchain</p>
       </footer>
     </div>
   );

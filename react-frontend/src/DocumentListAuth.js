@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Container, TextField, Typography, Button } from '@mui/material';
-import { initializeApp } from 'firebase/app';
 import { List, ListItem, ListItemText, Divider } from '@mui/material';
-import { getFirestore, collection, addDoc, serverTimestamp, query, where, orderBy, getDocs  } from 'firebase/firestore';
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, query, where, orderBy, getDocs, limit, doc, getDoc } from 'firebase/firestore';
 import { format } from 'date-fns';
+import axios from 'axios';
+import './DocumentListAuth.css'; // Importar o CSS
 
 // Configurar as credenciais do Firebase
 const firebaseConfig = {
@@ -21,26 +23,20 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const FieldAuthentication = ({ label, name, value, onChange }) => (
-  <div>
-    <TextField
-      label={label}
-      fullWidth
-      name={name}
-      value={value}
-      onChange={onChange}
-      sx={{ marginBottom: '10px' }}
-    />
-    <div>
+const FieldAuthentication = ({ label, value }) => (
+  <div className="document-list-auth-item">
+    <Typography variant="h6" className="document-list-auth-label">
+      {label} 
+    </Typography>
+    <div className="document-list-auth-status">
       {value === "true" ? 'Autenticado ✅' : 'Não Autenticado ❌'}
     </div>
   </div>
 );
 
-function DocumentListAuth({ documents }) {
-
+function DocumentListAuth() {
   const [searchResults, setSearchResults] = useState([]);
-  const [documentData, setDocumentData] = useState([]);
+  const [documentData, setDocumentData] = useState({ ID: '' });
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -52,9 +48,19 @@ function DocumentListAuth({ documents }) {
 
   const handleSearch = async () => {
     try {
-      const q = query(collection(db, "documentStatus"), where("ID", "==", documentData.ID), where("Title", "==", "true"), where("Soutien", "==", "true"), where("Authors", "==", "true"), where("Editors", "==", "true"), where("Multimedia", "==", "true"), where("Keywords", "==", "true"), orderBy("timestamp"));
+      const q = query(
+        collection(db, "documentStatus"),
+        where("ID", "==", documentData.ID),
+        where("Title", "==", "true"),
+        where("Soutien", "==", "true"),
+        where("Authors", "==", "true"),
+        where("Editors", "==", "true"),
+        where("Multimedia", "==", "true"),
+        where("Keywords", "==", "true"),
+        orderBy("timestamp")
+      );
       const querySnapshot = await getDocs(q);
-      
+
       const results = [];
       querySnapshot.forEach((doc) => {
         results.push(doc.data());
@@ -65,25 +71,75 @@ function DocumentListAuth({ documents }) {
     }
   };
 
+  const handleCreation = (documentData) => {
+    const url = 'http://localhost:9090/documents';
+  
+    axios
+      .post(url, documentData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handleSendToProduction = async (document) => {
+    try {
+      // Garantir que o ID é uma string
+      const documentID = String(document.ID);
+
+      // Criar uma consulta para buscar o documento mais recente
+      const q = query(
+        collection(db, "document"),
+        where("ID", "==", documentID),
+        orderBy("timestamp", "desc"),
+        limit(1)
+      );
+
+      const querySnapshot = await getDocs(q);
+      let documentData = null;
+
+      querySnapshot.forEach((doc) => {
+        documentData = doc.data(); // Pegue o dado do primeiro (e único) documento
+        console.log(doc.data());
+      });
+
+      if (documentData) {
+        handleCreation(documentData); // Passar os dados do documento para o handleCreation
+      } else {
+        console.log("Documento não encontrado.");
+      }
+    } catch (error) {
+      console.error('Erro ao buscar o documento:', error);
+    }
+  };
+
   return (
-    <Container maxWidth="xs" sx={{ marginTop: '100px' }}>
-
-    <Typography variant="h4" sx={{ marginBottom: '20px' }}>
+    <Container maxWidth="sm" className="document-list-auth-container">
+      <Typography variant="h4" className="document-list-auth-header">
         Listar versão autenticada
-    </Typography>
+      </Typography>
 
-    <TextField
-        label="ID"
-        fullWidth
-        name="ID"
-        value={documentData.ID}
-        onChange={handleChange}
-        sx={{ marginBottom: '10px' }}
-      />
+      <div className="document-list-auth-controls">
+        <TextField
+          label="ID"
+          fullWidth
+          name="ID"
+          value={documentData.ID}
+          onChange={handleChange}
+          className="document-list-auth-textfield"
+        />
 
-      <Button variant="contained" onClick={handleSearch} fullWidth>
-        Buscar versões autenticadas do documento
-      </Button>
+        <Button variant="contained" onClick={handleSearch} className="document-list-auth-button">
+          Buscar versões autenticadas
+        </Button>
+      </div>
 
       <List>
         {searchResults.map((document, index) => {
@@ -97,54 +153,50 @@ function DocumentListAuth({ documents }) {
             <React.Fragment key={index}>
               <ListItem>
                 <ListItemText primary={`ID: ${document.ID}`} secondary={`Timestamp: ${formattedTimestamp}`} />
+                <Button 
+                  variant="contained" 
+                  color="primary" 
+                  onClick={() => handleSendToProduction(document)}
+                  className="document-list-auth-send-button"
+                >
+                  Enviar para produção
+                </Button>
               </ListItem>
               <Divider />
               <ListItem>
                 <FieldAuthentication
                   label="Título"
-                  name="Title"
                   value={document.Title}
-                  onChange={() => {}}
                 />
               </ListItem>
               <ListItem>
                 <FieldAuthentication
                   label="Soutien"
-                  name="Soutien"
                   value={document.Soutien}
-                  onChange={() => {}}
                 />
               </ListItem>
               <ListItem>
                 <FieldAuthentication
                   label="Autores"
-                  name="Authors"
                   value={document.Authors}
-                  onChange={() => {}}
                 />
               </ListItem>
               <ListItem>
                 <FieldAuthentication
                   label="Editores"
-                  name="Editors"
                   value={document.Editors}
-                  onChange={() => {}}
                 />
               </ListItem>
               <ListItem>
                 <FieldAuthentication
                   label="Multimídia"
-                  name="Multimedia"
                   value={document.Multimedia}
-                  onChange={() => {}}
                 />
               </ListItem>
               <ListItem>
                 <FieldAuthentication
                   label="Palavras-chave"
-                  name="Keywords"
                   value={document.Keywords}
-                  onChange={() => {}}
                 />
               </ListItem>
             </React.Fragment>

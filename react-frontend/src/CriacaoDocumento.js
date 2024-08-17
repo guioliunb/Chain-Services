@@ -23,20 +23,32 @@
   function CriacaoDocumento() {
     const [documentData, setDocumentData] = useState({
       ID: '1',
-      Title: 'wer',
-      Soutien: 'wer',
-      Authors: 'wer',
-      Editors: 'wer',
-      Multimedia: 'wer',
-      Keywords: 'wer',
+      Title: 'default',
+      Soutien: 'default',
+      Authors: 'default',
+      Editors: 'default',
+      Multimedia: 'default',
+      Keywords: 'default',
       timestamp: serverTimestamp()
     });
 
     const handleCreation = () => {
       const url = 'http://localhost:9090/documents';
-
+      console.log('Dados recebidos pelo frontend:',documentData)
+      const documentDataFormatted = {
+        ID: String(documentData.ID),
+        Title: String(documentData.Title),
+        Soutien: String(documentData.Soutien),
+        Authors: String(documentData.Authors),
+        Editors: String(documentData.Editors),
+        Multimedia: String(documentData.Multimedia),
+        Keywords: String(documentData.Keywords),
+        timestamp: new Date().toISOString() // Converter timestamp para ISO
+      };
+  
+      console.log('Dados enviados ao backend:', documentDataFormatted);
       axios
-        .post(url, documentData, {
+        .post(url, documentDataFormatted, {  
           headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*'
@@ -62,9 +74,24 @@
 
     const handleSave = async () => {
       try {
-        // Verifique se "documentStatus" é uma coleção válida no Firestore
+        // Adicionar o documento na coleção 'documents'
         const docRef = await addDoc(collection(db, "document"), documentData);
         console.log('Documento adicionado com ID:', docRef.id);
+    
+        // Criar o documento correspondente na coleção 'documentStatus'
+        const initialStatus = {
+          ID: documentData.ID,
+          Title: false,
+          Soutien: false,
+          Authors: false,
+          Editors: false,
+          Multimedia: false,
+          Keywords: false,
+          timestamp: new Date() // Adicionar um timestamp para o status inicial
+        };
+    
+        await addDoc(collection(db, "documentStatus"), initialStatus);
+        console.log('Documento de status inicial adicionado com ID:', docRef.id);
       } catch (error) {
         console.error('Erro ao adicionar documento:', error);
       }

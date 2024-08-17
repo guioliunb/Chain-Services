@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Container, TextField, Typography, Button } from '@mui/material';
 import { List, ListItem, ListItemText, Divider } from '@mui/material';
-import { getFirestore, collection, addDoc, serverTimestamp, query, where, orderBy, getDocs  } from 'firebase/firestore';
+import { getFirestore, collection, query, where, orderBy, getDocs } from 'firebase/firestore';
 import { format } from 'date-fns';
 import { initializeApp } from 'firebase/app';
+import './DocumentList.css'; // Importar o CSS
 
 // Configurar as credenciais do Firebase
 const firebaseConfig = {
@@ -34,10 +35,9 @@ const FieldAuthentication = ({ label, name, value, onChange }) => (
   </div>
 );
 
-function DocumentList({ documents }) {
-
+function DocumentList() {
   const [searchHistoric, setSearchHistoric] = useState([]);
-  const [documentData, setDocumentData] = useState([]);
+  const [documentData, setDocumentData] = useState({ ID: '' });
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -64,93 +64,92 @@ function DocumentList({ documents }) {
   };
 
   return (
-  
-  <Container maxWidth="xs" sx={{ marginTop: '100px' }}>
-
-    <Typography variant="h4" sx={{ marginBottom: '20px' }}>
+    <Container maxWidth="xs" className="document-list-container">
+      <Typography variant="h4" className="document-list-header">
         Listar histórico do documento 
-    </Typography>
+      </Typography>
 
-    <TextField
-        label="ID"
-        fullWidth
-        name="ID"
-        value={documentData.ID}
-        onChange={handleChange}
-        sx={{ marginBottom: '10px' }}
-      />
+      <div className="document-list-controls">
+        <TextField
+          label="ID"
+          fullWidth
+          name="ID"
+          value={documentData.ID}
+          onChange={handleChange}
+          className="document-list-textfield"
+        />
 
-     <Button variant="contained" onClick={handleFetch} fullWidth>
-        Buscar histórico do documento
-      </Button>
+        <Button variant="contained" onClick={handleFetch} className="document-list-button">
+          Buscar histórico do documento
+        </Button>
+      </div>
 
-    <List>
-      {searchHistoric.map((document, index) => {
-        // Converter o timestamp em um objeto de data
-        const timestamp = document.timestamp.toDate();
+      <List className="document-list">
+        {searchHistoric.map((document, index) => {
+          // Converter o timestamp em um objeto de data
+          const timestamp = document.timestamp.toDate();
 
-        // Formatar o objeto de data para o formato desejado (exemplo: 'dd/MM/yyyy HH:mm:ss')
-        const formattedTimestamp = format(timestamp, 'dd/MM/yyyy HH:mm:ss');
+          // Formatar o objeto de data para o formato desejado (exemplo: 'dd/MM/yyyy HH:mm:ss')
+          const formattedTimestamp = format(timestamp, 'dd/MM/yyyy HH:mm:ss');
 
-        return (
-          <React.Fragment key={index}>
-            <ListItem>
-              <ListItemText primary={`ID: ${document.ID}`} secondary={`Timestamp: ${formattedTimestamp}`} />
-            </ListItem>
-            <Divider />
-            <ListItem>
-              <FieldAuthentication
-                label="Título"
-                name="Title"
-                value={document.Title}
-                onChange={() => {}}
-              />
-            </ListItem>
-            <ListItem>
-              <FieldAuthentication
-                label="Soutien"
-                name="Soutien"
-                value={document.Soutien}
-                onChange={() => {}}
-              />
-            </ListItem>
-            <ListItem>
-              <FieldAuthentication
-                label="Autores"
-                name="Authors"
-                value={document.Authors}
-                onChange={() => {}}
-              />
-            </ListItem>
-            <ListItem>
-              <FieldAuthentication
-                label="Editores"
-                name="Editors"
-                value={document.Editors}
-                onChange={() => {}}
-              />
-            </ListItem>
-            <ListItem>
-              <FieldAuthentication
-                label="Multimídia"
-                name="Multimedia"
-                value={document.Multimedia}
-                onChange={() => {}}
-              />
-            </ListItem>
-            <ListItem>
-              <FieldAuthentication
-                label="Palavras-chave"
-                name="Keywords"
-                value={document.Keywords}
-                onChange={() => {}}
-              />
-            </ListItem>
-          </React.Fragment>
-        );
-      })}
-    </List>
-
+          return (
+            <React.Fragment key={index}>
+              <ListItem className="document-list-item">
+                <ListItemText primary={`ID: ${document.ID}`} secondary={`Timestamp: ${formattedTimestamp}`} />
+              </ListItem>
+              <Divider className="document-list-divider" />
+              <ListItem className="document-list-item">
+                <FieldAuthentication
+                  label="Título"
+                  name="Title"
+                  value={document.Title}
+                  onChange={() => {}}
+                />
+              </ListItem>
+              <ListItem className="document-list-item">
+                <FieldAuthentication
+                  label="Soutien"
+                  name="Soutien"
+                  value={document.Soutien}
+                  onChange={() => {}}
+                />
+              </ListItem>
+              <ListItem className="document-list-item">
+                <FieldAuthentication
+                  label="Autores"
+                  name="Authors"
+                  value={document.Authors}
+                  onChange={() => {}}
+                />
+              </ListItem>
+              <ListItem className="document-list-item">
+                <FieldAuthentication
+                  label="Editores"
+                  name="Editors"
+                  value={document.Editors}
+                  onChange={() => {}}
+                />
+              </ListItem>
+              <ListItem className="document-list-item">
+                <FieldAuthentication
+                  label="Multimídia"
+                  name="Multimedia"
+                  value={document.Multimedia}
+                  onChange={() => {}}
+                />
+              </ListItem>
+              <ListItem className="document-list-item">
+                <FieldAuthentication
+                  label="Palavras-chave"
+                  name="Keywords"
+                  value={document.Keywords}
+                  onChange={() => {}}
+                />
+              </ListItem>
+            </React.Fragment>
+          );
+        })}
+      </List>
     </Container>
   );
 }

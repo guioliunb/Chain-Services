@@ -1,0 +1,56 @@
+.document-list-auth-container {
+    margin-top: 100px;
+    padding: 20px;
+    background-color: #f2f2f2; /* Cinza claro para combinar com o restante */
+    border-radius: 8px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1); /* Ajustar sombra para melhor consistência */
+    max-width: 500px; /* Adicionar largura máxima */
+    margin: 100px auto; /* Centralizar horizontalmente */
+}
+
+.document-list-auth-header {
+    margin-bottom: 20px;
+    text-align: center; /* Centraliza o título */
+    color: #333; /* Cor do título consistente com o restante */
+}
+
+.document-list-auth-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza o conteúdo */
+    gap: 15px; /* Espaçamento entre o campo de entrada e o botão */
+}
+
+.document-list-auth-textfield {
+    max-width: 400px; /* Limita a largura do campo de entrada */
+}
+
+.document-list-auth-button {
+    max-width: 200px; /* Ajuste a largura máxima do botão */
+}
+
+.document-list-auth-item {
+    margin-bottom: 10px;
+}
+
+.document-list-auth-label {
+    margin-bottom: 5px;
+}
+
+.document-list-auth-status {
+    font-size: 16px;
+    color: #333;
+}
+
+/* Adicionando estilo para o botão de enviar para produção */
+.document-list-auth-send-button {
+    margin-left: 20px; /* Espaçamento à esquerda do botão */
+}
+
+/* Flexbox para ListItem para separar texto e botão */
+.document-list-auth-list-item {
+    display: flex;
+    justify-content: space-between; /* Espaça o conteúdo de forma a ocupar toda a largura disponível */
+    align-items: center; /* Alinha verticalmente o conteúdo */
+    margin-bottom: 10px; /* Adiciona margem entre os itens da lista */
+}

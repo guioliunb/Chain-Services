@@ -1,0 +1,52 @@
+/* Estilo do contêiner principal */
+.document-list-container {
+    background-color: #f2f2f2; /* Cinza claro */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    max-width: 500px; /* Largura máxima do contêiner */
+    margin: 100px auto; /* Centralizar horizontalmente */
+  }
+  
+  /* Cabeçalho da lista */
+  .document-list-header {
+    margin-bottom: 30px; /* Espaço abaixo do cabeçalho */
+    text-align: center;
+    color: #333; /* Cinza escuro */
+  }
+  
+  /* Controles de busca */
+  .document-list-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px; /* Espaço entre o campo de texto e o botão */
+  }
+  
+  /* Campo de texto */
+  .document-list-textfield {
+    width: 100%;
+    max-width: 400px; /* Ajuste a largura máxima do campo de busca */
+  }
+  
+  /* Botão de busca */
+  .document-list-button {
+    width: 100%;
+    max-width: 200px; /* Ajuste a largura máxima do botão */
+  }
+  
+  /* Estilo da lista */
+  .document-list {
+    margin-top: 30px; /* Espaço acima da lista */
+  }
+  
+  /* Item da lista */
+  .document-list-item {
+    padding: 10px 0; /* Espaço dentro do item */
+  }
+  
+  /* Divisor da lista */
+  .document-list-divider {
+    margin: 10px 0; /* Espaço acima e abaixo do divisor */
+  }
+  
