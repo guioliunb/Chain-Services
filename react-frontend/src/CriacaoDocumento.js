@@ -63,7 +63,7 @@
     const handleSave = async () => {
       try {
         // Verifique se "documentStatus" é uma coleção válida no Firestore
-        const docRef = await addDoc(collection(db, "documentStatus"), documentData);
+        const docRef = await addDoc(collection(db, "document"), documentData);
         console.log('Documento adicionado com ID:', docRef.id);
       } catch (error) {
         console.error('Erro ao adicionar documento:', error);
