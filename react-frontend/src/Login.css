@@ -1,0 +1,31 @@
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f0f0f0; /* Cor de fundo mais clara */
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  .login-logo {
+    width: 150px;
+    margin-bottom: 20px;
+  }
+  
+  h2 {
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .login-button {
+    background-color: #1976d2; /* Cor azul para o botão */
+    color: white;
+    margin-top: 20px;
+  }
+  
+  .login-button:hover {
+    background-color: #1565c0; /* Cor mais escura ao passar o mouse */
+  }
+  

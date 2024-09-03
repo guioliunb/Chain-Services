@@ -49,4 +49,19 @@
   .document-list-divider {
     margin: 10px 0; /* Espaço acima e abaixo do divisor */
   }
+
+  .image-container {
+    text-align: center; /* Centraliza a imagem */
+    margin: 20px 0; /* Adiciona margem acima e abaixo da imagem */
+    padding: 10px; /* Adiciona preenchimento ao redor da imagem */
+    border: 2px solid #ccc; /* Adiciona uma borda ao redor da imagem */
+    border-radius: 8px; /* Adiciona bordas arredondadas */
+    background-color: #f9f9f9; /* Adiciona um fundo leve para destacar a imagem */
+  }
+  
+  .document-image {
+    max-width: 100%; /* Garante que a imagem não ultrapasse a largura do container */
+    height: auto; /* Mantém a proporção da imagem */
+  }
+  
   

@@ -7,3 +7,13 @@ integration/scripts/crypto-config/*
 application-gateway-typescript/node_modules/*
 react-frontend/node_modules/*
 application-gateway-typescript/dist/*
+application-gateway-typescript/*
+back-end/*
+fabric-samples/*
+integration/*
+application-gateway-typescript/*
+react-frontend/node_modules/*
+fabric-samples
+bkp/*
+
+

@@ -62,24 +62,16 @@ function AutenticadorTexto() {
 
   const handleSave = async () => {
     try {
-      // Adicionar o documento na coleção 'documents'
-      const docRef = await addDoc(collection(db, "documents"), documentData);
-      console.log('Documento adicionado com ID:', docRef.id);
-  
-      // Criar o documento correspondente na coleção 'documentStatus'
-      const initialStatus = {
-        ID: documentData.ID,
-        Title: false,
-        Soutien: false,
-        Authors: false,
-        Editors: false,
-        Multimedia: false,
-        Keywords: false,
-        timestamp: new Date() // Adicionar um timestamp para o status inicial
+      const fullDocumentData = {
+        ...documentData,
+        customFields: customFields.reduce((acc, field) => {
+          acc[field.name] = field.value;
+          return acc;
+        }, {}),
+        timestamp: serverTimestamp()
       };
-  
-      await addDoc(collection(db, "documentStatus"), initialStatus);
-      console.log('Documento de status inicial adicionado com ID:', docRef.id);
+      const docRef = await addDoc(collection(db, "documentStatus"), fullDocumentData);
+      console.log('Documento adicionado com ID:', docRef.id);
     } catch (error) {
       console.error('Erro ao adicionar documento:', error);
     }
@@ -136,6 +128,7 @@ function AutenticadorTexto() {
         name="ID"
         value={documentData.ID}
         onChange={handleChange}
+        autoComplete="off"
         sx={{ marginBottom: '15px' }}
         InputProps={{
           style: { borderRadius: '8px' }
@@ -143,7 +136,17 @@ function AutenticadorTexto() {
       />
 
       {/* Botão de Buscar Documento */}
-      <Button variant="contained" onClick={handleSearch} fullWidth sx={{ marginBottom: '20px' }}>
+      <Button
+        variant="contained"
+        onClick={handleSearch}
+        fullWidth
+        sx={{ 
+          backgroundColor: '#779fd8', 
+          color: '#fff', 
+          '&:hover': { backgroundColor: '#5f6b9d' },
+          marginBottom: '16px' // Adiciona margem abaixo do botão
+        }}
+      >
         Buscar Documento
       </Button>
 
@@ -158,6 +161,7 @@ function AutenticadorTexto() {
                   name={key}
                   value={value}
                   onChange={handleChange}
+                  autoComplete="off"
                   sx={{ borderRadius: '8px' }}
                 >
                   <MenuItem value="false">Não autenticado</MenuItem>
@@ -181,6 +185,7 @@ function AutenticadorTexto() {
                 name="value"
                 value={field.value}
                 onChange={(e) => handleCustomFieldChange(index, e)}
+                autoComplete="off"
                 sx={{ flex: 1 }}
               >
                 <MenuItem value="false">Não autenticado</MenuItem>
@@ -197,7 +202,12 @@ function AutenticadorTexto() {
           </Button>
           
           {/* Botão de Salvar Documento */}
-          <Button variant="contained" onClick={handleSave} fullWidth className="submit-button">
+          <Button
+            variant="contained"
+            onClick={handleSave}
+            fullWidth
+            sx={{ backgroundColor: '#779fd8', color: '#fff', '&:hover': { backgroundColor: '#5f6b9d' } }}
+          >
             Salvar no Firestore
           </Button>
         </>

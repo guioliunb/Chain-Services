@@ -1,128 +1,60 @@
-/* Ajuste de cores para um tema mais frio */
-body {
-  background-color: #f2f2f2; /* Cinza claro */
-  font-family: 'Arial', sans-serif;
-  margin: 0;
-  padding: 0;
+/* App.css */
+
+.App {
+  text-align: center;
 }
 
-/* Estilização dos links de navegação */
 .nav-links {
   display: flex;
   justify-content: center;
-  gap: 20px;
-  margin: 20px;
+  background-color: #779fd8;
+  padding: 10px;
 }
 
 .nav-links a {
-  color: #f0f0f0; /* Branco claro */
-  padding: 12px 24px;
+  color: #fff;
   text-decoration: none;
-  border-radius: 8px;
-  background-color: #2d2d2d; /* Cinza escuro */
-  font-weight: 500;
-  font-size: 16px;
-  text-transform: uppercase;
-  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-  border: 2px solid transparent; /* Para border color quando ativo */
-}
-
-.nav-links a:hover {
-  color: #e0e0e0; /* Cinza claro */
-  background-color: #444; /* Cinza mais escuro */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  margin: 0 15px;
 }
 
 .nav-links a.active {
-  color: #ffffff; /* Branco puro */
-  background-color: #dc3545; /* Vermelho */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-  border-color: #dc3545; /* Bordas vermelhas */
+  font-weight: bold;
 }
 
-/* Estilização do botão de login */
-.login-button {
-  background-color: #007bff; /* Azul padrão */
-  color: white;
-  border-radius: 8px;
-  padding: 10px 20px;
-  text-transform: uppercase;
-  font-weight: 600;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.login-button:hover {
-  background-color: #0056b3; /* Azul escuro */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-}
-
-
-
-header {
-  background-color: #333; /* Cinza escuro */
-  padding: 20px;
-  text-align: center;
-}
-
-header nav {
+.login-container {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 20px;
-}
-
-header nav a {
-  color: #555; /* Cinza médio */
-  padding: 10px 20px;
-  text-decoration: none;
-  text-align: center;
-  display: inline-block;
-  border-radius: 5px;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-header nav a:hover {
-  color: #fff;
-  background-color: #444; /* Cinza mais escuro */
-}
-
-.home-container {
-  width: 100%;
-}
-
-.hero-section {
-  position: relative;
-  text-align: center;
-  color: white;
-  background-color: #333; /* Cinza escuro */
-  padding: 100px 20px;
-}
-
-.features-section,
-.about-section,
-.tech-section,
-.testimonials-section {
-  padding: 40px 20px;
-  text-align: center;
-  background-color: #e6e6e6; /* Cinza muito claro */
-}
-
-.feature-card {
-  background-color: #fff; /* Branco */
+  height: 100vh;
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+  background-color: #f5f5f5;
 }
 
-.feature-card:hover {
-  transform: translateY(-10px);
+.logo {
+  width: 150px;
+  height: auto;
+  margin-bottom: 20px;
 }
 
-.home-footer {
-  background-color: #333; /* Cinza escuro */
-  color: white;
-  text-align: center;
-  padding: 20px 0;
+.login-title {
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
 }
+
+.login-textfield {
+  margin-bottom: 16px;
+}
+
+.login-button {
+  margin-top: 20px;
+  background-color: #007bff;
+  color: #fff;
+}
+
+.login-error {
+  color: red;
+  margin-bottom: 16px;
+}
+  

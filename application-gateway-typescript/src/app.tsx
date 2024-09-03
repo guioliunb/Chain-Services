@@ -264,13 +264,31 @@ app.get('/documents', async (req: Request, res: Response) => {
 app.post('/documents', async (req: Request, res: Response) => {
     try {
         const contract = await newContract();
-        const { Title, Soutien, Authors, Editors, Multimedia, Keywords } = req.body;
-        await contract.submitTransaction('CreateDocument', DocumentId, Title, Soutien, Authors, Editors, Multimedia, Keywords);
-        res.status(201).send(`Document ${DocumentId} created`);
+        const { ID, Title, Soutien, Authors, Editors, Multimedia, Keywords } = req.body;
+
+        // Log os dados recebidos
+        console.log('Dados recebidos:', { ID, Title, Soutien, Authors, Editors, Multimedia, Keywords });
+
+        // Valide tipos básicos (opcional)
+        if (typeof ID !== 'string' ||
+            typeof Title !== 'string' ||
+            typeof Soutien !== 'string' ||
+            typeof Authors !== 'string' ||
+            typeof Editors !== 'string' ||
+            typeof Multimedia !== 'string' ||
+            typeof Keywords !== 'string') {
+            throw new Error('Dados recebidos possuem tipos incorretos');
+        }
+
+        await contract.submitTransaction('CreateDocument', ID, Title, Soutien, Authors, Editors, Multimedia, Keywords);
+        res.status(201).send(`Blockchain - Document ${ID} created`);
     } catch (error) {
-        res.status(500).send(error);
+        console.error('Error creating document:', error);
+        res.status(500).send({ message: 'Blockchain - Error creating document', details: error });
     }
 });
+
+
 
 app.post('/documents/transfer', async (req: Request, res: Response) => {
     try {
@@ -279,7 +297,7 @@ app.post('/documents/transfer', async (req: Request, res: Response) => {
         const commit = await contract.submitAsync('TransferDocument', { arguments: [documentId, newOwner] });
         const oldOwner = utf8Decoder.decode(commit.getResult());
         await commit.getStatus();
-        res.send(`Ownership transferred from ${oldOwner} to ${newOwner}`);
+        res.send(`Blockchain - Ownership transferred from ${oldOwner} to ${newOwner}`);
     } catch (error) {
         res.status(500).send(error);
     }
@@ -302,12 +320,12 @@ app.put('/documents/:id', async (req: Request, res: Response) => {
         const documentId = req.params.id;
         const { Title, Soutien, Authors, Editors, Multimedia, Keywords } = req.body;
         await contract.submitTransaction('UpdateDocument', documentId, Title, Soutien, Authors, Editors, Multimedia, Keywords);
-        res.send(`Document ${documentId} updated`);
+        res.send(`Blockchain - Document ${documentId} updated`);
     } catch (error) {
         res.status(500).send(error);
     }
 });
 
 app.listen(9090, () => {
-    console.log('Server running on http://localhost:9090');
+    console.log('Blockchain Gateway - Server running on http://localhost:9090');
 });

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Container, TextField, Typography, Button } from '@mui/material';
-import { List, ListItem, ListItemText, Divider } from '@mui/material';
+import { Container, TextField, Typography, Button, List, ListItem, ListItemText, Divider } from '@mui/material';
 import { getFirestore, collection, query, where, orderBy, getDocs } from 'firebase/firestore';
 import { format } from 'date-fns';
 import { initializeApp } from 'firebase/app';
@@ -57,7 +56,6 @@ function DocumentList() {
         results.push(doc.data());
       });
       setSearchHistoric(results);
-      console.log(results);
     } catch (error) {
       console.error('Erro ao buscar documentos:', error);
     }
@@ -79,7 +77,17 @@ function DocumentList() {
           className="document-list-textfield"
         />
 
-        <Button variant="contained" onClick={handleFetch} className="document-list-button">
+        <Button
+          variant="contained"
+          onClick={handleFetch}
+          fullWidth
+          sx={{ 
+            backgroundColor: '#779fd8', 
+            color: '#fff', 
+            '&:hover': { backgroundColor: '#5f6b9d' },
+            marginBottom: '16px' // Adiciona margem abaixo do botão
+          }}
+        >
           Buscar histórico do documento
         </Button>
       </div>
@@ -98,6 +106,17 @@ function DocumentList() {
                 <ListItemText primary={`ID: ${document.ID}`} secondary={`Timestamp: ${formattedTimestamp}`} />
               </ListItem>
               <Divider className="document-list-divider" />
+              <ListItem className="document-list-item">
+                {document.Multimedia && (
+                  <div className="image-container">
+                    <img 
+                      src={document.Multimedia} 
+                      alt="Multimídia" 
+                      className="document-image"
+                    />
+                  </div>
+                )}
+              </ListItem>
               <ListItem className="document-list-item">
                 <FieldAuthentication
                   label="Título"

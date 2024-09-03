@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Container, TextField, Typography, Button } from '@mui/material';
 import { List, ListItem, ListItemText, Divider } from '@mui/material';
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, query, where, orderBy, getDocs, limit, doc, getDoc } from 'firebase/firestore';
+import { getFirestore, collection, query, where, orderBy, getDocs, limit } from 'firebase/firestore';
 import { format } from 'date-fns';
 import axios from 'axios';
 import './DocumentListAuth.css'; // Importar o CSS
@@ -26,10 +26,10 @@ const db = getFirestore(app);
 const FieldAuthentication = ({ label, value }) => (
   <div className="document-list-auth-item">
     <Typography variant="h6" className="document-list-auth-label">
-      {label} 
+      {label}
     </Typography>
     <div className="document-list-auth-status">
-      {value === "true" ? 'Autenticado ✅' : 'Não Autenticado ❌'}
+      {value ? 'Autenticado ✅' : 'Não Autenticado ❌'}
     </div>
   </div>
 );
@@ -37,6 +37,7 @@ const FieldAuthentication = ({ label, value }) => (
 function DocumentListAuth() {
   const [searchResults, setSearchResults] = useState([]);
   const [documentData, setDocumentData] = useState({ ID: '' });
+  const [customFields, setCustomFields] = useState([]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -44,6 +45,13 @@ function DocumentListAuth() {
       ...prevData,
       [name]: value
     }));
+  };
+
+  const handleCustomFieldChange = (index, field) => (event) => {
+    const { name, value } = event.target;
+    const updatedFields = [...customFields];
+    updatedFields[index] = { ...updatedFields[index], [name]: value };
+    setCustomFields(updatedFields);
   };
 
   const handleSearch = async () => {
@@ -73,7 +81,7 @@ function DocumentListAuth() {
 
   const handleCreation = (documentData) => {
     const url = 'http://localhost:9090/documents';
-  
+
     axios
       .post(url, documentData, {
         headers: {
@@ -91,10 +99,8 @@ function DocumentListAuth() {
 
   const handleSendToProduction = async (document) => {
     try {
-      // Garantir que o ID é uma string
       const documentID = String(document.ID);
 
-      // Criar uma consulta para buscar o documento mais recente
       const q = query(
         collection(db, "document"),
         where("ID", "==", documentID),
@@ -106,12 +112,22 @@ function DocumentListAuth() {
       let documentData = null;
 
       querySnapshot.forEach((doc) => {
-        documentData = doc.data(); // Pegue o dado do primeiro (e único) documento
-        console.log(doc.data());
+        documentData = doc.data();
       });
 
       if (documentData) {
-        handleCreation(documentData); // Passar os dados do documento para o handleCreation
+        // Extraindo campos customizados
+        const extractedCustomFields = customFields.reduce((acc, field) => {
+          if (documentData.hasOwnProperty(field.name)) {
+            acc[field.name] = documentData[field.name];
+          }
+          return acc;
+        }, {});
+
+        // Atualizando documentData com campos customizados
+        documentData = { ...documentData, ...extractedCustomFields };
+
+        handleCreation(documentData);
       } else {
         console.log("Documento não encontrado.");
       }
@@ -136,17 +152,25 @@ function DocumentListAuth() {
           className="document-list-auth-textfield"
         />
 
-        <Button variant="contained" onClick={handleSearch} className="document-list-auth-button">
+        <Button
+            variant="contained"
+            onClick={handleSearch}
+            fullWidth
+            sx={{ 
+              backgroundColor: '#779fd8', 
+              color: '#fff', 
+              '&:hover': { backgroundColor: '#5f6b9d' },
+              marginBottom: '16px' // Adiciona margem abaixo do botão
+            }}
+          >
           Buscar versões autenticadas
         </Button>
+
       </div>
 
       <List>
         {searchResults.map((document, index) => {
-          // Converter o timestamp em um objeto de data
           const timestamp = document.timestamp.toDate();
-
-          // Formatar o objeto de data para o formato desejado (exemplo: 'dd/MM/yyyy HH:mm:ss')
           const formattedTimestamp = format(timestamp, 'dd/MM/yyyy HH:mm:ss');
 
           return (
@@ -163,42 +187,24 @@ function DocumentListAuth() {
                 </Button>
               </ListItem>
               <Divider />
-              <ListItem>
-                <FieldAuthentication
-                  label="Título"
-                  value={document.Title}
-                />
-              </ListItem>
-              <ListItem>
-                <FieldAuthentication
-                  label="Soutien"
-                  value={document.Soutien}
-                />
-              </ListItem>
-              <ListItem>
-                <FieldAuthentication
-                  label="Autores"
-                  value={document.Authors}
-                />
-              </ListItem>
-              <ListItem>
-                <FieldAuthentication
-                  label="Editores"
-                  value={document.Editors}
-                />
-              </ListItem>
-              <ListItem>
-                <FieldAuthentication
-                  label="Multimídia"
-                  value={document.Multimedia}
-                />
-              </ListItem>
-              <ListItem>
-                <FieldAuthentication
-                  label="Palavras-chave"
-                  value={document.Keywords}
-                />
-              </ListItem>
+              {Object.keys(document).map((key) => (
+                key !== 'ID' && key !== 'timestamp' && key !== 'customFields' && (
+                  <ListItem key={key}>
+                    <FieldAuthentication
+                      label={key.charAt(0).toUpperCase() + key.slice(1)}
+                      value={document[key]}
+                    />
+                  </ListItem>
+                )
+              ))}
+              {document.customFields && Object.keys(document.customFields).map((key) => (
+                <ListItem key={key}>
+                  <FieldAuthentication
+                    label={key.charAt(0).toUpperCase() + key.slice(1)}
+                    value={document.customFields[key]}
+                  />
+                </ListItem>
+              ))}
             </React.Fragment>
           );
         })}

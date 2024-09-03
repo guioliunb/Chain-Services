@@ -2,19 +2,21 @@ import React, { useState } from 'react';
 import { getFirestore } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import { TextField, Button } from '@mui/material';
+import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import AutenticadorTexto from './AutenticadorTexto';
 import CriacaoDocumento from './CriacaoDocumento';
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import Home from './Home';
 import DocumentList from './DocumentList';
+import DocumentListAuth from './DocumentListAuth';
 import './App.css'; 
+import blockchainImage from './hyperledger.png';
+import NotFound from './NotFound'; // Importe o novo componente
 
 import {
   getAuth,
   signInWithEmailAndPassword,
   signOut
 } from 'firebase/auth';
-import DocumentListAuth from './DocumentListAuth';
 
 const firebaseConfig = {
   apiKey: "AIzaSyA2qsHbyS6ocXja1nnymwSGHcqi5sXWDus",
@@ -54,12 +56,14 @@ function App() {
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
 
+  const navigate = useNavigate(); // Adiciona o useNavigate
+
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, loginEmail, loginPassword)
       .then((userCredential) => {
-        const user = userCredential.user;
         setLoginSuccess(true);
         setLoginError(null);
+        navigate('/'); // Redireciona para a homepage após o login
       })
       .catch((error) => {
         setLoginSuccess(false);
@@ -71,6 +75,7 @@ function App() {
     signOut(auth)
       .then(() => {
         setLoginSuccess(false);
+        navigate('/'); // Redireciona para a página inicial após o logout
       })
       .catch((error) => {
         console.error('Erro ao deslogar:', error);
@@ -80,7 +85,7 @@ function App() {
   return (
     <div className="App">
       {loginSuccess ? (
-        <Router>
+        <>
           <Navigation handleLogout={handleLogout} />
           <Routes>
             <Route path="/" element={<Home />} />
@@ -89,12 +94,13 @@ function App() {
             <Route path="/historico" element={<DocumentList />} />
             <Route path="/versaoAutenticada" element={<DocumentListAuth />} />
             <Route path="/logout" element={<div>Você saiu</div>} />
-            <Route path="*" element={<div>404: Página não encontrada</div>} />
+            <Route path="*" element={<NotFound/>} />
           </Routes>
-        </Router>
+        </>
       ) : (
-        <div>
-          <h2>Faça login com o Firebase</h2>
+        <div className="login-container">
+          <img src={blockchainImage} alt="Hyperledger Logo" className="logo" />
+          <h2 className="login-title">Bem-vindo ao sistema de autenticação</h2>
           <TextField
             label="Email"
             variant="outlined"
@@ -103,6 +109,7 @@ function App() {
             onChange={(e) => setLoginEmail(e.target.value)}
             fullWidth
             margin="normal"
+            className="login-textfield"
           />
           <TextField
             label="Senha"
@@ -112,8 +119,9 @@ function App() {
             onChange={(e) => setLoginPassword(e.target.value)}
             fullWidth
             margin="normal"
+            className="login-textfield"
           />
-          {loginError && <p>{loginError}</p>}
+          {loginError && <p className="login-error">{loginError}</p>}
           <Button variant="contained" onClick={handleLogin} className="login-button">
             Fazer Login
           </Button>
