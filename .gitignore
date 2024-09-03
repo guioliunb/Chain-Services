@@ -4,3 +4,6 @@ front-end-bkp/*
 integration/state/ca-root/*
 crypto-config/*
 integration/scripts/crypto-config/*
+application-gateway-typescript/node_modules/*
+react-frontend/node_modules/*
+application-gateway-typescript/dist/*
