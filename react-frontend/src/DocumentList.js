@@ -3,6 +3,7 @@ import { Container, TextField, Typography, Button, List, ListItem, ListItemText,
 import { getFirestore, collection, query, where, orderBy, getDocs } from 'firebase/firestore';
 import { format } from 'date-fns';
 import { initializeApp } from 'firebase/app';
+import { useNavigate } from 'react-router-dom';
 import './DocumentList.css'; // Importar o CSS
 
 // Configurar as credenciais do Firebase
@@ -37,6 +38,7 @@ const FieldAuthentication = ({ label, name, value, onChange }) => (
 function DocumentList() {
   const [searchHistoric, setSearchHistoric] = useState([]);
   const [documentData, setDocumentData] = useState({ ID: '' });
+  const navigate = useNavigate();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -58,6 +60,8 @@ function DocumentList() {
       setSearchHistoric(results);
     } catch (error) {
       console.error('Erro ao buscar documentos:', error);
+    
+      navigate('/');
     }
   };
 

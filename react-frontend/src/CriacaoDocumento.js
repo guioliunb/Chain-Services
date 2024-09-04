@@ -3,6 +3,7 @@ import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/fire
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import axios from 'axios';
 import { Container, TextField, Button, Typography, Input } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { initializeApp } from 'firebase/app';
 
 // Configuração do Firebase
@@ -23,6 +24,8 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 
 function CriacaoDocumento() {
+  const navigate = useNavigate();
+
   const [documentData, setDocumentData] = useState({
     ID: '1',
     Title: 'IMAGE',
@@ -76,19 +79,19 @@ function CriacaoDocumento() {
       timestamp: new Date().toISOString()
     };
 
-    axios
-      .post(url, documentDataFormatted, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-        },
-      })
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    // axios
+    //   .post(url, documentDataFormatted, {
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'Access-Control-Allow-Origin': '*'
+    //     },
+    //   })
+    //   .then((response) => {
+    //     console.log(response.data);
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
 
     handleSave(imageUrl);
   };
@@ -117,6 +120,8 @@ function CriacaoDocumento() {
     } catch (error) {
       console.error('Erro ao adicionar documento:', error);
     }
+
+    navigate('/');
   };
 
   return (

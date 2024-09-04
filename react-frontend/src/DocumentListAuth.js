@@ -5,6 +5,7 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, query, where, orderBy, getDocs, limit } from 'firebase/firestore';
 import { format } from 'date-fns';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import './DocumentListAuth.css'; // Importar o CSS
 
 // Configurar as credenciais do Firebase
@@ -38,6 +39,7 @@ function DocumentListAuth() {
   const [searchResults, setSearchResults] = useState([]);
   const [documentData, setDocumentData] = useState({ ID: '' });
   const [customFields, setCustomFields] = useState([]);
+  const navigate = useNavigate();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -95,6 +97,8 @@ function DocumentListAuth() {
       .catch((error) => {
         console.error(error);
       });
+
+      navigate('/');
   };
 
   const handleSendToProduction = async (document) => {
@@ -104,6 +108,7 @@ function DocumentListAuth() {
       const q = query(
         collection(db, "document"),
         where("ID", "==", documentID),
+        where("timestamp", "<=", document.timestamp),
         orderBy("timestamp", "desc"),
         limit(1)
       );

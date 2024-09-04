@@ -3,6 +3,7 @@ import { Container, TextField, Button, Typography, FormControl, InputLabel, Sele
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, addDoc, serverTimestamp, query, where, orderBy, getDocs } from 'firebase/firestore';
 import AddIcon from '@mui/icons-material/Add';
+import { useNavigate } from 'react-router-dom';
 import RemoveIcon from '@mui/icons-material/Remove';
 
 // Configurar as credenciais do Firebase
@@ -35,6 +36,7 @@ function AutenticadorTexto() {
 
   const [customFields, setCustomFields] = useState([]);
   const [isDocumentLoaded, setIsDocumentLoaded] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -75,6 +77,8 @@ function AutenticadorTexto() {
     } catch (error) {
       console.error('Erro ao adicionar documento:', error);
     }
+
+    navigate('/');
   };
 
   const handleSearch = async () => {
