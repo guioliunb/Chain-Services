@@ -8,6 +8,7 @@ import CriacaoDocumento from './CriacaoDocumento';
 import Home from './Home';
 import DocumentList from './DocumentList';
 import DocumentListAuth from './DocumentListAuth';
+import Blockchain from './Blockchain';
 import './App.css'; 
 import blockchainImage from './hyperledger.png';
 import NotFound from './NotFound'; // Importe o novo componente
@@ -44,6 +45,7 @@ function Navigation({ handleLogout }) {
       <Link className={isActive('/autenticacao')} to="/autenticacao">Autenticação</Link>
       <Link className={isActive('/historico')} to="/historico">Histórico</Link>
       <Link className={isActive('/versaoAutenticada')} to="/versaoAutenticada">Versões</Link>
+      <Link className={isActive('/blockchain')} to="/blockchain">Blockchain</Link>
       <Link className={isActive('/logout')} to="/logout" onClick={handleLogout}>Logout</Link>
     </nav>
   );
@@ -93,6 +95,7 @@ function App() {
             <Route path="/autenticacao" element={<AutenticadorTexto />} />
             <Route path="/historico" element={<DocumentList />} />
             <Route path="/versaoAutenticada" element={<DocumentListAuth />} />
+            <Route path="/blockchain" element={<Blockchain />} />
             <Route path="/logout" element={<div>Você saiu</div>} />
             <Route path="*" element={<NotFound/>} />
           </Routes>
