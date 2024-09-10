@@ -9,6 +9,7 @@ import Home from './Home';
 import DocumentList from './DocumentList';
 import DocumentListAuth from './DocumentListAuth';
 import Blockchain from './Blockchain';
+import Tutorial from './Tutorial';
 import './App.css'; 
 import blockchainImage from './hyperledger.png';
 import NotFound from './NotFound'; // Importe o novo componente
@@ -41,6 +42,7 @@ function Navigation({ handleLogout }) {
   return (
     <nav className="nav-links">
       <Link className={isActive('/')} to="/">Home</Link>
+      <Link className={isActive('/tutorial')} to="/tutorial">Tutorial</Link>
       <Link className={isActive('/criacao')} to="/criacao">Criação</Link>
       <Link className={isActive('/autenticacao')} to="/autenticacao">Autenticação</Link>
       <Link className={isActive('/historico')} to="/historico">Histórico</Link>
@@ -91,6 +93,7 @@ function App() {
           <Navigation handleLogout={handleLogout} />
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/tutorial" element={<Tutorial />} />
             <Route path="/criacao" element={<CriacaoDocumento />} />
             <Route path="/autenticacao" element={<AutenticadorTexto />} />
             <Route path="/historico" element={<DocumentList />} />

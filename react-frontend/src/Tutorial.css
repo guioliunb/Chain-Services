@@ -1,0 +1,96 @@
+.tutorial-section {
+    padding: 30px;
+    background-color: #f1f1f1;
+    border-radius: 10px;
+    max-width: 1200px;
+    margin: 20px auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .tutorial-intro {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .tutorial-intro h1 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .tutorial-intro p {
+    font-size: 18px;
+    color: #555;
+  }
+  
+  .tutorial-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .tutorial-step {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .tutorial-image {
+    max-width: 150px;
+    max-height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  .tutorial-text {
+    flex: 1;
+  }
+  
+  .tutorial-text h2 {
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .tutorial-text p {
+    font-size: 16px;
+    color: #666;
+  }
+  
+  .tutorial-text ul {
+    margin: 10px 0;
+    padding-left: 20px;
+  }
+  
+  .tutorial-text li {
+    margin: 5px 0;
+  }
+  
+  .tutorial-footer {
+    text-align: center;
+    margin-top: 30px;
+  }
+  
+  @media (max-width: 768px) {
+    .tutorial-section {
+      padding: 20px;
+    }
+  
+    .tutorial-intro h1 {
+      font-size: 24px;
+    }
+  
+    .tutorial-text h2 {
+      font-size: 20px;
+    }
+  
+    .tutorial-text p,
+    .tutorial-text li {
+      font-size: 14px;
+    }
+  }
+  
