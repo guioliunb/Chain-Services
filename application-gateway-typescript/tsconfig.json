@@ -1,0 +1,25 @@
+{
+   "extends":"@tsconfig/node14/tsconfig.json",
+   "compilerOptions": {
+       "jsx": "react",
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "esnext"
+        ],
+       "allowJs": true,
+       "experimentalDecorators": true,
+       "emitDecoratorMetadata": true,
+       "outDir": "dist",
+       "moduleResolution": "node",
+       "declaration": true,
+       "sourceMap": true,
+       "noImplicitAny": true,
+   },
+   "include": [
+       "./src/**/*",
+        "src/**/*.css", "public/index.tsx", "public/AppFront.tsx"],
+   "exclude": [
+       "./src/**/*.spec.ts"
+   ]
+}
